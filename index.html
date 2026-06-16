@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Organic Wavy Rounded Rectangle Generator</title>
+  <style>
+    :root {
+      --page: #f4f0e8;
+      --panel: #fffaf1;
+      --panel-2: #fff3df;
+      --ink: #191714;
+      --muted: #756f64;
+      --line: rgba(25, 23, 20, 0.14);
+      --strong-line: rgba(25, 23, 20, 0.22);
+      --accent: #8d4d25;
+      --accent-dark: #6e3918;
+      --danger: #9b2d20;
+      --shadow: 0 20px 70px rgba(33, 28, 20, 0.18);
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: radial-gradient(circle at 70% 15%, rgba(255, 217, 143, 0.28), transparent 28rem), var(--page);
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body { min-height: 100vh; }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(310px, 380px) minmax(0, 1fr);
+    }
+
+    aside {
+      height: 100vh;
+      overflow: auto;
+      padding: 22px 20px 28px;
+      background: color-mix(in srgb, var(--panel) 92%, white);
+      border-right: 1px solid var(--line);
+      box-shadow: 8px 0 30px rgba(31, 24, 12, 0.04);
+    }
+
+    main {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      align-items: center;
+      justify-items: center;
+      padding: 22px;
+      position: relative;
+    }
+
+    .title h1 {
+      font-size: 1.08rem;
+      line-height: 1.15;
+      margin: 0 0 7px;
+      letter-spacing: -0.02em;
+    }
+
+    .title p {
+      margin: 0 0 17px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-bottom: 16px;
+    }
+
+    button, .fileish {
+      border: 1px solid var(--strong-line);
+      border-radius: 12px;
+      background: #fffdfa;
+      color: var(--ink);
+      font-weight: 720;
+      font-size: 0.88rem;
+      line-height: 1;
+      min-height: 39px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+      user-select: none;
+    }
+
+    button:hover { background: #fff5e5; border-color: rgba(141, 77, 37, 0.42); }
+    button:active { transform: translateY(1px); }
+    button.primary { background: var(--accent); color: white; border-color: var(--accent-dark); }
+    button.primary:hover { background: var(--accent-dark); }
+    button.full { grid-column: 1 / -1; }
+
+    .section {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.44);
+      border-radius: 18px;
+      padding: 14px;
+      margin: 12px 0;
+    }
+
+    .section h2 {
+      margin: 0 0 11px;
+      font-size: 0.77rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #5c5042;
+    }
+
+    .control {
+      display: grid;
+      gap: 6px;
+      margin: 12px 0;
+    }
+
+    .control:first-of-type { margin-top: 0; }
+    .control:last-child { margin-bottom: 0; }
+
+    .control-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      font-size: 0.86rem;
+      font-weight: 680;
+    }
+
+    .control-head small {
+      color: var(--muted);
+      font-weight: 620;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .control-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 76px;
+      align-items: center;
+      gap: 9px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    input[type="number"], input[type="text"], textarea {
+      width: 100%;
+      border: 1px solid var(--strong-line);
+      border-radius: 10px;
+      background: #fffefa;
+      color: var(--ink);
+      padding: 8px 9px;
+      font: inherit;
+      font-variant-numeric: tabular-nums;
+      outline: none;
+    }
+
+    input[type="number"]:focus, input[type="text"]:focus, textarea:focus {
+      border-color: rgba(141, 77, 37, 0.72);
+      box-shadow: 0 0 0 3px rgba(141, 77, 37, 0.12);
+    }
+
+    input[type="color"] {
+      width: 100%;
+      height: 42px;
+      border: 1px solid var(--strong-line);
+      border-radius: 12px;
+      background: #fffefa;
+      padding: 4px;
+      cursor: pointer;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: 680;
+    }
+
+    input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; }
+
+    .seed-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 9px;
+      align-items: center;
+    }
+
+    .stage-card {
+      width: min(100%, 1040px);
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .preview-frame {
+      width: min(100%, 980px);
+      aspect-ratio: 1.38 / 1;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(25, 23, 20, 0.12);
+      border-radius: 30px;
+      background:
+        linear-gradient(45deg, rgba(25,23,20,0.035) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(25,23,20,0.035) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(25,23,20,0.035) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(25,23,20,0.035) 75%);
+      background-size: 24px 24px;
+      background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    #previewSvg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .stage-top {
+      width: min(100%, 980px);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.45);
+      border-radius: 999px;
+      padding: 7px 11px;
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(141, 77, 37, 0.13);
+    }
+
+    .hint {
+      width: min(100%, 980px);
+      color: var(--muted);
+      font-size: 0.86rem;
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%) translateY(18px);
+      opacity: 0;
+      background: rgba(25, 23, 20, 0.92);
+      color: white;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      pointer-events: none;
+      transition: opacity 160ms ease, transform 160ms ease;
+      z-index: 50;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(24, 19, 12, 0.48);
+      z-index: 100;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      width: min(760px, 100%);
+      max-height: min(760px, 92vh);
+      display: grid;
+      grid-template-rows: auto minmax(220px, 1fr) auto;
+      gap: 12px;
+      border-radius: 22px;
+      background: var(--panel);
+      color: var(--ink);
+      box-shadow: 0 28px 90px rgba(0,0,0,0.28);
+      border: 1px solid rgba(255,255,255,0.34);
+      padding: 18px;
+    }
+
+    .modal header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .modal h2 { margin: 0 0 4px; font-size: 1rem; }
+    .modal p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
+    .modal textarea {
+      min-height: 320px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      white-space: pre;
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 9px;
+    }
+
+    .danger-text { color: var(--danger); }
+
+    @media (max-width: 940px) {
+      .app { grid-template-columns: 1fr; }
+      aside {
+        height: auto;
+        max-height: none;
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+      }
+      main { padding: 16px; }
+      .stage-card { padding: 4px; }
+      .stage-top { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <div class="title">
+        <h1>Organic Wavy Rounded Rectangle</h1>
+        <p>Seeded, live SVG border generator. Change the seed for a new shape with the same settings.</p>
+      </div>
+
+      <div class="button-row">
+        <button id="randomizeBtn" class="primary" type="button">Randomize seed</button>
+        <button id="exportBtn" type="button">Export SVG</button>
+        <button id="jsonBtn" type="button">Show JSON</button>
+        <button id="resetBtn" type="button">Reset</button>
+      </div>
+
+      <div id="controls"></div>
+    </aside>
+
+    <main>
+      <div class="stage-card">
+        <div class="stage-top">
+          <span class="pill"><span class="dot"></span><span id="liveLabel">Live preview</span></span>
+          <span class="pill" id="statsLabel">—</span>
+        </div>
+        <div class="preview-frame">
+          <svg id="previewSvg" role="img" aria-label="Live preview of the generated organic wavy rounded rectangle"></svg>
+        </div>
+        <div class="hint">Tip: lower detail and raise chunk amount for blobby sticker shapes; raise detail and noise scale for scratchy pen lines.</div>
+      </div>
+    </main>
+  </div>
+
+  <div id="jsonModal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="jsonTitle">
+      <header>
+        <div>
+          <h2 id="jsonTitle">Parameters JSON</h2>
+          <p>Copy this to save your work. Paste edited or previously saved JSON here, then apply it.</p>
+        </div>
+        <button id="closeModalBtn" type="button" aria-label="Close JSON modal">Close</button>
+      </header>
+      <textarea id="jsonText" spellcheck="false"></textarea>
+      <div class="modal-actions">
+        <button id="copyJsonBtn" type="button">Copy JSON</button>
+        <button id="applyJsonBtn" class="primary" type="button">Apply JSON</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const TAU = Math.PI * 2;
+
+    const defaults = Object.freeze({
+      seed: 834927,
+      canvasWidth: 1000,
+      canvasHeight: 720,
+      rectWidth: 560,
+      rectHeight: 350,
+      cornerRadius: 88,
+      strokeWidth: 24,
+      strokeColor: "#1f1812",
+      fillColor: "#ffe6b4",
+      fillOpacity: 1,
+      backgroundColor: "#fff8eb",
+      showBackground: true,
+      detail: 260,
+      smoothing: 0.82,
+      roughness: 12,
+      waveAmount: 11,
+      waveFrequency: 5,
+      noiseAmount: 9,
+      noiseScale: 14,
+      chunkAmount: 7,
+      chunkCount: 9,
+      distortion: 0.28,
+      cornerChaos: 0.55,
+      warp: 6,
+      passes: 1,
+      passSpread: 4,
+      strokeOpacity: 1
+    });
+
+    const controlGroups = [
+      {
+        title: "Seed",
+        controls: [
+          { key: "seed", label: "Seed", type: "seed", min: 0, max: 2147483647, step: 1 }
+        ]
+      },
+      {
+        title: "SVG canvas",
+        controls: [
+          { key: "canvasWidth", label: "Export width", min: 400, max: 1800, step: 10, suffix: "px" },
+          { key: "canvasHeight", label: "Export height", min: 300, max: 1400, step: 10, suffix: "px" },
+          { key: "showBackground", label: "Include background", type: "checkbox" },
+          { key: "backgroundColor", label: "Background", type: "color" }
+        ]
+      },
+      {
+        title: "Rounded rectangle",
+        controls: [
+          { key: "rectWidth", label: "Width", min: 80, max: 1000, step: 2, suffix: "px" },
+          { key: "rectHeight", label: "Height", min: 80, max: 800, step: 2, suffix: "px" },
+          { key: "cornerRadius", label: "Corner radius", min: 0, max: 320, step: 1, suffix: "px" },
+          { key: "strokeWidth", label: "Stroke width", min: 1, max: 90, step: 1, suffix: "px" }
+        ]
+      },
+      {
+        title: "Organic line",
+        controls: [
+          { key: "detail", label: "Detail", min: 32, max: 800, step: 1, suffix: "pts" },
+          { key: "smoothing", label: "Smoothing", min: 0, max: 1.25, step: 0.01 },
+          { key: "roughness", label: "Roughness", min: 0, max: 55, step: 0.5, suffix: "px" },
+          { key: "waveAmount", label: "Wave amount", min: 0, max: 70, step: 0.5, suffix: "px" },
+          { key: "waveFrequency", label: "Wave frequency", min: 0, max: 28, step: 1 },
+          { key: "noiseAmount", label: "Noise amount", min: 0, max: 60, step: 0.5, suffix: "px" },
+          { key: "noiseScale", label: "Noise scale", min: 1, max: 70, step: 1 },
+          { key: "chunkAmount", label: "Chunk amount", min: 0, max: 70, step: 0.5, suffix: "px" },
+          { key: "chunkCount", label: "Chunk count", min: 1, max: 42, step: 1 },
+          { key: "distortion", label: "Tangent distortion", min: 0, max: 1.8, step: 0.01 },
+          { key: "cornerChaos", label: "Corner chaos", min: 0, max: 2.4, step: 0.01 },
+          { key: "warp", label: "Global warp", min: 0, max: 80, step: 0.5, suffix: "px" }
+        ]
+      },
+      {
+        title: "Sketch pass",
+        controls: [
+          { key: "passes", label: "Stroke passes", min: 1, max: 7, step: 1 },
+          { key: "passSpread", label: "Pass spread", min: 0, max: 28, step: 0.5, suffix: "px" },
+          { key: "strokeOpacity", label: "Stroke opacity", min: 0.05, max: 1, step: 0.01 }
+        ]
+      },
+      {
+        title: "Color",
+        controls: [
+          { key: "strokeColor", label: "Stroke", type: "color" },
+          { key: "fillColor", label: "Fill", type: "color" },
+          { key: "fillOpacity", label: "Fill opacity", min: 0, max: 1, step: 0.01 }
+        ]
+      }
+    ];
+
+    let params = { ...defaults };
+    let renderPending = false;
+    const controlsRoot = document.getElementById("controls");
+    const previewSvg = document.getElementById("previewSvg");
+    const statsLabel = document.getElementById("statsLabel");
+    const toast = document.getElementById("toast");
+    const modal = document.getElementById("jsonModal");
+    const jsonText = document.getElementById("jsonText");
+    const controlRefs = new Map();
+    let toastTimer = 0;
+
+    function xmur3(str) {
+      let h = 1779033703 ^ str.length;
+      for (let i = 0; i < str.length; i++) {
+        h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+        h = (h << 13) | (h >>> 19);
+      }
+      return function() {
+        h = Math.imul(h ^ (h >>> 16), 2246822507);
+        h = Math.imul(h ^ (h >>> 13), 3266489909);
+        return (h ^= h >>> 16) >>> 0;
+      };
+    }
+
+    function mulberry32(a) {
+      return function() {
+        let t = a += 0x6D2B79F5;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    function rngFrom(seed) {
+      return mulberry32(xmur3(String(seed))());
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function lerp(a, b, t) {
+      return a + (b - a) * t;
+    }
+
+    function smoothstep(t) {
+      t = clamp(t, 0, 1);
+      return t * t * (3 - 2 * t);
+    }
+
+    function fmt(n) {
+      return Number.isFinite(n) ? Number(n).toFixed(2).replace(/\.00$/, "") : "0";
+    }
+
+    function cleanNumber(value, fallback) {
+      const n = Number(value);
+      return Number.isFinite(n) ? n : fallback;
+    }
+
+    function getControlDef(key) {
+      for (const group of controlGroups) {
+        const found = group.controls.find(c => c.key === key);
+        if (found) return found;
+      }
+      return null;
+    }
+
+    function normalizeParam(key, value) {
+      const defValue = defaults[key];
+      const def = getControlDef(key);
+      if (typeof defValue === "number") {
+        let n = cleanNumber(value, defValue);
+        if (def) n = clamp(n, def.min ?? -Infinity, def.max ?? Infinity);
+        if (def && Number.isInteger(def.step)) n = Math.round(n);
+        return n;
+      }
+      if (typeof defValue === "boolean") return Boolean(value);
+      return String(value ?? defValue);
+    }
+
+    function currentParamsForSave() {
+      const output = {};
+      for (const key of Object.keys(defaults)) output[key] = params[key];
+      return output;
+    }
+
+    function buildControls() {
+      controlsRoot.innerHTML = "";
+      for (const group of controlGroups) {
+        const section = document.createElement("section");
+        section.className = "section";
+        const heading = document.createElement("h2");
+        heading.textContent = group.title;
+        section.appendChild(heading);
+
+        for (const control of group.controls) {
+          const wrap = document.createElement("div");
+          wrap.className = "control";
+
+          if (control.type === "checkbox") {
+            const label = document.createElement("label");
+            label.className = "checkbox-row";
+            const input = document.createElement("input");
+            input.type = "checkbox";
+            input.checked = Boolean(params[control.key]);
+            input.addEventListener("change", () => {
+              params[control.key] = input.checked;
+              scheduleRender();
+            });
+            label.append(input, document.createTextNode(control.label));
+            wrap.appendChild(label);
+            controlRefs.set(control.key, { input, type: "checkbox" });
+          } else if (control.type === "color") {
+            const head = document.createElement("div");
+            head.className = "control-head";
+            const label = document.createElement("label");
+            label.textContent = control.label;
+            label.htmlFor = control.key;
+            const valueLabel = document.createElement("small");
+            valueLabel.textContent = params[control.key];
+            head.append(label, valueLabel);
+
+            const input = document.createElement("input");
+            input.id = control.key;
+            input.type = "color";
+            input.value = isHexColor(params[control.key]) ? params[control.key] : defaults[control.key];
+            input.addEventListener("input", () => {
+              params[control.key] = input.value;
+              valueLabel.textContent = input.value;
+              scheduleRender();
+            });
+            wrap.append(head, input);
+            controlRefs.set(control.key, { input, valueLabel, type: "color" });
+          } else if (control.type === "seed") {
+            const head = document.createElement("div");
+            head.className = "control-head";
+            const label = document.createElement("label");
+            label.textContent = control.label;
+            label.htmlFor = control.key;
+            const valueLabel = document.createElement("small");
+            valueLabel.textContent = String(params[control.key]);
+            head.append(label, valueLabel);
+
+            const grid = document.createElement("div");
+            grid.className = "seed-grid";
+            const input = document.createElement("input");
+            input.id = control.key;
+            input.type = "number";
+            input.min = control.min;
+            input.max = control.max;
+            input.step = control.step;
+            input.value = params[control.key];
+            input.addEventListener("input", () => {
+              params[control.key] = normalizeParam(control.key, input.value);
+              valueLabel.textContent = String(params[control.key]);
+              scheduleRender();
+            });
+            const mini = document.createElement("button");
+            mini.type = "button";
+            mini.textContent = "New";
+            mini.addEventListener("click", randomizeSeed);
+            grid.append(input, mini);
+            wrap.append(head, grid);
+            controlRefs.set(control.key, { input, valueLabel, type: "seed" });
+          } else {
+            const head = document.createElement("div");
+            head.className = "control-head";
+            const label = document.createElement("label");
+            label.textContent = control.label;
+            label.htmlFor = control.key;
+            const valueLabel = document.createElement("small");
+            valueLabel.textContent = formatValue(control, params[control.key]);
+            head.append(label, valueLabel);
+
+            const grid = document.createElement("div");
+            grid.className = "control-grid";
+            const range = document.createElement("input");
+            range.type = "range";
+            range.id = control.key;
+            range.min = control.min;
+            range.max = control.max;
+            range.step = control.step;
+            range.value = params[control.key];
+
+            const number = document.createElement("input");
+            number.type = "number";
+            number.min = control.min;
+            number.max = control.max;
+            number.step = control.step;
+            number.value = params[control.key];
+
+            const setValue = value => {
+              params[control.key] = normalizeParam(control.key, value);
+              range.value = params[control.key];
+              number.value = params[control.key];
+              valueLabel.textContent = formatValue(control, params[control.key]);
+              scheduleRender();
+            };
+
+            range.addEventListener("input", () => setValue(range.value));
+            number.addEventListener("input", () => setValue(number.value));
+
+            grid.append(range, number);
+            wrap.append(head, grid);
+            controlRefs.set(control.key, { range, number, valueLabel, type: "range" });
+          }
+
+          section.appendChild(wrap);
+        }
+        controlsRoot.appendChild(section);
+      }
+    }
+
+    function formatValue(control, value) {
+      const step = Number(control.step ?? 1);
+      const places = step < 1 ? String(step).split(".")[1]?.length ?? 2 : 0;
+      const n = Number(value);
+      const shown = Number.isFinite(n) ? n.toFixed(Math.min(3, places)).replace(/\.0+$/, "") : value;
+      return `${shown}${control.suffix ? " " + control.suffix : ""}`;
+    }
+
+    function syncControls() {
+      for (const [key, ref] of controlRefs.entries()) {
+        const value = params[key];
+        const def = getControlDef(key);
+        if (ref.type === "checkbox") {
+          ref.input.checked = Boolean(value);
+        } else if (ref.type === "color") {
+          ref.input.value = isHexColor(value) ? value : defaults[key];
+          ref.valueLabel.textContent = String(value);
+        } else if (ref.type === "seed") {
+          ref.input.value = value;
+          ref.valueLabel.textContent = String(value);
+        } else {
+          ref.range.value = value;
+          ref.number.value = value;
+          ref.valueLabel.textContent = formatValue(def, value);
+        }
+      }
+    }
+
+    function isHexColor(value) {
+      return /^#([\da-f]{3}|[\da-f]{6}|[\da-f]{8})$/i.test(String(value));
+    }
+
+    function escapeAttr(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function escapeText(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function roundedRectSegments(width, height, radius) {
+      const w = Math.max(1, width);
+      const h = Math.max(1, height);
+      const r = clamp(radius, 0, Math.min(w, h) / 2);
+      const left = -w / 2;
+      const right = w / 2;
+      const top = -h / 2;
+      const bottom = h / 2;
+      const sw = Math.max(0, w - 2 * r);
+      const sh = Math.max(0, h - 2 * r);
+      const arcLen = Math.PI * r / 2;
+      const edgeCorner = q => Math.max(0, 1 - Math.min(q, 1 - q) * 8) * 0.35;
+      const segs = [];
+
+      if (sw > 0.001) {
+        segs.push({ len: sw, fn: q => ({ x: lerp(left + r, right - r, q), y: top, nx: 0, ny: -1, tx: 1, ty: 0, cornerness: edgeCorner(q) }) });
+      }
+      if (arcLen > 0.001) {
+        segs.push({ len: arcLen, fn: q => arcPoint(right - r, top + r, r, -Math.PI / 2, q) });
+      }
+      if (sh > 0.001) {
+        segs.push({ len: sh, fn: q => ({ x: right, y: lerp(top + r, bottom - r, q), nx: 1, ny: 0, tx: 0, ty: 1, cornerness: edgeCorner(q) }) });
+      }
+      if (arcLen > 0.001) {
+        segs.push({ len: arcLen, fn: q => arcPoint(right - r, bottom - r, r, 0, q) });
+      }
+      if (sw > 0.001) {
+        segs.push({ len: sw, fn: q => ({ x: lerp(right - r, left + r, q), y: bottom, nx: 0, ny: 1, tx: -1, ty: 0, cornerness: edgeCorner(q) }) });
+      }
+      if (arcLen > 0.001) {
+        segs.push({ len: arcLen, fn: q => arcPoint(left + r, bottom - r, r, Math.PI / 2, q) });
+      }
+      if (sh > 0.001) {
+        segs.push({ len: sh, fn: q => ({ x: left, y: lerp(bottom - r, top + r, q), nx: -1, ny: 0, tx: 0, ty: -1, cornerness: edgeCorner(q) }) });
+      }
+      if (arcLen > 0.001) {
+        segs.push({ len: arcLen, fn: q => arcPoint(left + r, top + r, r, Math.PI, q) });
+      }
+
+      const total = segs.reduce((sum, s) => sum + s.len, 0) || 1;
+      return { segs, total };
+    }
+
+    function arcPoint(cx, cy, r, startAngle, q) {
+      const a = startAngle + q * Math.PI / 2;
+      const nx = Math.cos(a);
+      const ny = Math.sin(a);
+      return {
+        x: cx + r * nx,
+        y: cy + r * ny,
+        nx,
+        ny,
+        tx: -ny,
+        ty: nx,
+        cornerness: 1
+      };
+    }
+
+    function sampleRoundedRect(t, geometry) {
+      let s = ((t % 1) + 1) % 1 * geometry.total;
+      const segs = geometry.segs;
+      for (const seg of segs) {
+        if (s <= seg.len) return seg.fn(seg.len === 0 ? 0 : s / seg.len);
+        s -= seg.len;
+      }
+      return segs[segs.length - 1].fn(1);
+    }
+
+    function signal(t, harmonics) {
+      let sum = 0;
+      let weight = 0;
+      for (const h of harmonics) {
+        sum += Math.sin(TAU * h.freq * t + h.phase) * h.amp;
+        weight += Math.abs(h.amp);
+      }
+      return weight ? sum / weight : 0;
+    }
+
+    function chunkSignal(t, values) {
+      const count = values.length;
+      const scaled = ((t % 1) + 1) % 1 * count;
+      const i = Math.floor(scaled) % count;
+      const f = scaled - Math.floor(scaled);
+      const a = values[i];
+      const b = values[(i + 1) % count];
+      const plateau = 0.58;
+      if (f < plateau) return a;
+      return lerp(a, b, smoothstep((f - plateau) / (1 - plateau)));
+    }
+
+    function organicPoints(p, passIndex = 0) {
+      const width = Math.max(1, Number(p.rectWidth));
+      const height = Math.max(1, Number(p.rectHeight));
+      const radius = clamp(Number(p.cornerRadius), 0, Math.min(width, height) / 2);
+      const geometry = roundedRectSegments(width, height, radius);
+      const count = clamp(Math.round(Number(p.detail) || defaults.detail), 16, 1400);
+      const seedText = `${p.seed}|${passIndex}|organic-rounded-rectangle`;
+      const rng = rngFrom(seedText);
+      const waveFreq = Math.max(0, Math.round(Number(p.waveFrequency) || 0));
+      const noiseBase = Math.max(1, Math.round(Number(p.noiseScale) || 1));
+      const chunkCount = clamp(Math.round(Number(p.chunkCount) || 1), 1, 80);
+      const chunksA = Array.from({ length: chunkCount }, () => rng() * 2 - 1);
+      const chunksB = Array.from({ length: chunkCount }, () => rng() * 2 - 1);
+      const normalHarmonics = [];
+      const tangentHarmonics = [];
+      const cornerHarmonics = [];
+
+      for (let i = 0; i < 5; i++) {
+        normalHarmonics.push({ freq: noiseBase * (i + 1), phase: rng() * TAU, amp: Math.pow(0.58, i) });
+        tangentHarmonics.push({ freq: noiseBase * (i + 1) + 3 + i, phase: rng() * TAU, amp: Math.pow(0.62, i) });
+        cornerHarmonics.push({ freq: 4 + i * 3, phase: rng() * TAU, amp: Math.pow(0.55, i) });
+      }
+
+      const wavePhase = rng() * TAU;
+      const wavePhase2 = rng() * TAU;
+      const warpPhaseX = rng() * TAU;
+      const warpPhaseY = rng() * TAU;
+      const passNormalBias = passIndex === 0 ? 0 : (rng() * 2 - 1) * Number(p.passSpread);
+      const passTangentBias = passIndex === 0 ? 0 : (rng() * 2 - 1) * Number(p.passSpread) * 0.55;
+      const points = [];
+
+      for (let i = 0; i < count; i++) {
+        const t = i / count;
+        const base = sampleRoundedRect(t, geometry);
+        const noise = signal(t, normalHarmonics);
+        const noise2 = signal(t, tangentHarmonics);
+        const cornerNoise = signal(t, cornerHarmonics);
+        const chunky = chunkSignal(t, chunksA);
+        const chunky2 = chunkSignal((t + 0.13) % 1, chunksB);
+        let wave = 0;
+        if (waveFreq > 0) {
+          wave = Math.sin(TAU * waveFreq * t + wavePhase) * 0.74 + Math.sin(TAU * (waveFreq * 2 + 1) * t + wavePhase2) * 0.26;
+        }
+
+        const rough = Number(p.roughness) * noise;
+        const lumpy = Number(p.chunkAmount) * chunky;
+        const waves = Number(p.waveAmount) * wave;
+        const noisy = Number(p.noiseAmount) * (0.78 * noise + 0.22 * chunky2);
+        const cornerBoost = Number(p.cornerChaos) * Number(p.roughness) * base.cornerness * cornerNoise;
+        const normalAmt = rough + lumpy + waves + noisy + cornerBoost + passNormalBias;
+
+        const tangentScale = (Number(p.roughness) + Number(p.waveAmount) + Number(p.noiseAmount) + Number(p.chunkAmount)) * 0.32;
+        const tangentAmt = Number(p.distortion) * tangentScale * (0.68 * noise2 + 0.32 * chunky2) + passTangentBias;
+
+        const warp = Number(p.warp) || 0;
+        const normX = width ? base.x / width : 0;
+        const normY = height ? base.y / height : 0;
+        const warpX = warp * Math.sin(TAU * normY + warpPhaseX) * Math.sin(TAU * t + warpPhaseY) * 0.45;
+        const warpY = warp * Math.sin(TAU * normX + warpPhaseY) * Math.cos(TAU * t * 2 + warpPhaseX) * 0.45;
+
+        points.push({
+          x: base.x + base.nx * normalAmt + base.tx * tangentAmt + warpX,
+          y: base.y + base.ny * normalAmt + base.ty * tangentAmt + warpY
+        });
+      }
+
+      return points;
+    }
+
+    function pathFromPoints(points, smoothing) {
+      if (!points.length) return "";
+      const s = clamp(Number(smoothing), 0, 1.5);
+      const d = [`M ${fmt(points[0].x)} ${fmt(points[0].y)}`];
+      const len = points.length;
+      for (let i = 0; i < len; i++) {
+        const p0 = points[(i - 1 + len) % len];
+        const p1 = points[i];
+        const p2 = points[(i + 1) % len];
+        const p3 = points[(i + 2) % len];
+        const c1x = p1.x + (p2.x - p0.x) * s / 6;
+        const c1y = p1.y + (p2.y - p0.y) * s / 6;
+        const c2x = p2.x - (p3.x - p1.x) * s / 6;
+        const c2y = p2.y - (p3.y - p1.y) * s / 6;
+        d.push(`C ${fmt(c1x)} ${fmt(c1y)} ${fmt(c2x)} ${fmt(c2y)} ${fmt(p2.x)} ${fmt(p2.y)}`);
+      }
+      d.push("Z");
+      return d.join(" ");
+    }
+
+    function generatedPath(p, passIndex = 0) {
+      return pathFromPoints(organicPoints(p, passIndex), p.smoothing);
+    }
+
+    function svgBodyMarkup(p) {
+      const cw = Math.max(1, Number(p.canvasWidth));
+      const ch = Math.max(1, Number(p.canvasHeight));
+      const paths = [];
+      const passCount = clamp(Math.round(Number(p.passes) || 1), 1, 10);
+      const strokeOpacity = clamp(Number(p.strokeOpacity), 0, 1);
+      const baseD = generatedPath(p, 0);
+      const background = p.showBackground
+        ? `  <rect x="${fmt(-cw / 2)}" y="${fmt(-ch / 2)}" width="${fmt(cw)}" height="${fmt(ch)}" fill="${escapeAttr(p.backgroundColor)}"/>\n`
+        : "";
+
+      paths.push(`  <path d="${baseD}" fill="${escapeAttr(p.fillColor)}" fill-opacity="${fmt(clamp(Number(p.fillOpacity), 0, 1))}" stroke="none"/>`);
+
+      for (let pass = 0; pass < passCount; pass++) {
+        const d = pass === 0 ? baseD : generatedPath(p, pass);
+        const opacity = passCount === 1 ? strokeOpacity : clamp(strokeOpacity * (1.15 / passCount), 0.05, 1);
+        const widthJitter = pass === 0 ? 1 : 0.94 + (pass % 3) * 0.035;
+        paths.push(`  <path d="${d}" fill="none" stroke="${escapeAttr(p.strokeColor)}" stroke-width="${fmt(Number(p.strokeWidth) * widthJitter)}" stroke-opacity="${fmt(opacity)}" stroke-linecap="round" stroke-linejoin="round"/>`);
+      }
+
+      return background + paths.join("\n");
+    }
+
+    function fullSvgMarkup(p) {
+      const cw = Math.max(1, Number(p.canvasWidth));
+      const ch = Math.max(1, Number(p.canvasHeight));
+      const viewBox = `${fmt(-cw / 2)} ${fmt(-ch / 2)} ${fmt(cw)} ${fmt(ch)}`;
+      const metadata = {
+        generator: "Organic Wavy Rounded Rectangle Generator",
+        savedAt: new Date().toISOString(),
+        params: currentParamsForSave()
+      };
+      return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${fmt(cw)}" height="${fmt(ch)}" viewBox="${viewBox}" role="img" aria-label="Organic wavy rounded rectangle">\n  <metadata>${escapeText(JSON.stringify(metadata))}</metadata>\n${svgBodyMarkup(p)}\n</svg>\n`;
+    }
+
+    function renderNow() {
+      renderPending = false;
+      const cw = Math.max(1, Number(params.canvasWidth));
+      const ch = Math.max(1, Number(params.canvasHeight));
+      previewSvg.setAttribute("viewBox", `${fmt(-cw / 2)} ${fmt(-ch / 2)} ${fmt(cw)} ${fmt(ch)}`);
+      previewSvg.innerHTML = svgBodyMarkup(params);
+      const passCount = clamp(Math.round(Number(params.passes) || 1), 1, 10);
+      statsLabel.textContent = `${Math.round(params.detail)} points · ${passCount} pass${passCount === 1 ? "" : "es"} · seed ${params.seed}`;
+    }
+
+    function scheduleRender() {
+      if (!renderPending) {
+        renderPending = true;
+        requestAnimationFrame(renderNow);
+      }
+    }
+
+    function randomizeSeed() {
+      params.seed = Math.floor(Math.random() * 2147483647);
+      syncControls();
+      scheduleRender();
+      showToast("New seed generated");
+    }
+
+    function resetAll() {
+      params = { ...defaults };
+      syncControls();
+      scheduleRender();
+      showToast("Settings reset");
+    }
+
+    function exportSvg() {
+      const svg = fullSvgMarkup(params);
+      const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `organic-wavy-rounded-rect-${params.seed}.svg`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1200);
+      showToast("SVG exported");
+    }
+
+    function openJsonModal() {
+      jsonText.value = JSON.stringify(currentParamsForSave(), null, 2);
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      setTimeout(() => jsonText.focus(), 0);
+    }
+
+    function closeJsonModal() {
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    async function copyText(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return;
+      }
+      const temp = document.createElement("textarea");
+      temp.value = text;
+      temp.setAttribute("readonly", "");
+      temp.style.position = "fixed";
+      temp.style.left = "-9999px";
+      document.body.appendChild(temp);
+      temp.select();
+      const ok = document.execCommand("copy");
+      temp.remove();
+      if (!ok) throw new Error("Copy command failed");
+    }
+
+    async function copyJson() {
+      try {
+        await copyText(jsonText.value);
+        showToast("JSON copied");
+      } catch (err) {
+        showToast("Copy failed; select the JSON and copy manually");
+      }
+    }
+
+    function applyJson() {
+      try {
+        const parsed = JSON.parse(jsonText.value);
+        const incoming = parsed && typeof parsed.params === "object" ? parsed.params : parsed;
+        if (!incoming || typeof incoming !== "object" || Array.isArray(incoming)) {
+          throw new Error("JSON must be an object");
+        }
+        const next = { ...params };
+        for (const key of Object.keys(defaults)) {
+          if (Object.prototype.hasOwnProperty.call(incoming, key)) {
+            next[key] = normalizeParam(key, incoming[key]);
+          }
+        }
+        params = next;
+        syncControls();
+        scheduleRender();
+        showToast("JSON applied");
+      } catch (err) {
+        showToast("Invalid JSON: " + err.message);
+      }
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 1900);
+    }
+
+    document.getElementById("randomizeBtn").addEventListener("click", randomizeSeed);
+    document.getElementById("exportBtn").addEventListener("click", exportSvg);
+    document.getElementById("jsonBtn").addEventListener("click", openJsonModal);
+    document.getElementById("resetBtn").addEventListener("click", resetAll);
+    document.getElementById("closeModalBtn").addEventListener("click", closeJsonModal);
+    document.getElementById("copyJsonBtn").addEventListener("click", copyJson);
+    document.getElementById("applyJsonBtn").addEventListener("click", applyJson);
+
+    modal.addEventListener("click", event => {
+      if (event.target === modal) closeJsonModal();
+    });
+
+    window.addEventListener("keydown", event => {
+      if (event.key === "Escape" && modal.classList.contains("open")) closeJsonModal();
+    });
+
+    buildControls();
+    scheduleRender();
+  </script>
+</body>
+</html>
