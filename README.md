@@ -1,1 +1,1 @@
-# organic-wavy-shape-generator
+# shapewave
